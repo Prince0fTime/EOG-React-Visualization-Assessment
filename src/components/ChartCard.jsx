@@ -1,21 +1,6 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardHeader from './CardHeader';
-import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from './Avatar';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label} from 'recharts';
+import {ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label} from 'recharts';
 
-
-const useStyles = makeStyles({
-  card: {
-    margin: '5% 5%',
-  },
-});
 const data = [
   {
     metric: 'injValveOpen',
@@ -49,26 +34,24 @@ const data = [
   },
 ];
 export default (props) => {
-  const classes = useStyles(0);
   const {metric, unit} = data[0]
   const dataName = props.daName;
   return (
-    <Card className={classes.card}>
-      <CardHeader title="Test Data all setup. Now What?" />
-      <CardContent>
-      <h2>{dataName}</h2>
-      <LineChart width={600} height={300} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+    <React.Fragment>
+          <h2>{dataName}</h2>
+          <ResponsiveContainer  width="100%" height={280} >
+      <LineChart data={data} margin={{ top: 4, right: 0, left: -25, bottom: 5 }}>
         <XAxis dataKey="at">
           <Label value={dataName} offset={-6} position="insideBottomLeft" />
         </XAxis>
-        <YAxis label={{ value: `units measured in ${unit}`, angle: -90, position: 'insideLeft' }} />
+        <YAxis offset={6} label={{ value: `units measured in ${unit}`, angle: -90, position: 'Left' }} />
 
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
         <Legend />
         <Line type="monotone" dataKey="value" stroke="#82ca9d" />
       </LineChart>
-      </CardContent>
-    </Card>
+      </ResponsiveContainer>
+      </React.Fragment>
   );
 };

@@ -1,11 +1,17 @@
 import React from 'react';
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import ChartCard from './ChartCard'
+import Card from '@material-ui/core/Card';
+import CardHeader from './CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import ChartCard from './ChartCard';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+  },
+  card: {
+    margin: '5% 0.5%',
   },
 }));
 
@@ -41,24 +47,29 @@ const data = [
     unit: '%',
   },
 ];
-const dataNames =  [
-  "injValveOpen",
-  "oilTemp",
-  "tubingPressure",
-  "flareTemp",
-  "casingPressure",
-  "waterTemp"
-];
+// const dataNames = ['injValveOpen', 'oilTemp', 'tubingPressure', 'flareTemp', 'casingPressure', 'waterTemp'];
+// const dataNames = ['injValveOpen', 'oilTemp', 'tubingPressure'];
+
+const dataNames = ['waterTemp'];
+
 export default () => {
   const classes = useStyles(0);
-  const {metric, unit} = data[0]
+  const { metric, unit } = data[0];
+
   return (
     <div className={classes.root}>
-    {dataNames.map((dataName) => (
-      <Grid item xs={5} sm={6}>
-      <ChartCard daName={dataName}/>
-    </Grid>
-  ))}
+      <Card className={classes.card}>
+        <CardHeader title="Test Data all setup. Now What?" />
+        <CardContent>
+          <Grid container spacing={3}>
+            {dataNames.map(dataName => (
+              <Grid item xs={4}>
+                <ChartCard daName={dataName} />
+              </Grid>
+            ))}
+          </Grid>
+        </CardContent>
+      </Card>
     </div>
   );
 };
