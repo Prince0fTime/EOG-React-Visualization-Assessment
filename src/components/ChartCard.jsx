@@ -13,7 +13,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label} f
 
 const useStyles = makeStyles({
   card: {
-    margin: '5% 25%',
+    margin: '5% 5%',
   },
 });
 const data = [
@@ -48,17 +48,18 @@ const data = [
     unit: '%',
   },
 ];
-export default () => {
+export default (props) => {
   const classes = useStyles(0);
   const {metric, unit} = data[0]
+  const dataName = props.daName;
   return (
     <Card className={classes.card}>
       <CardHeader title="Test Data all setup. Now What?" />
       <CardContent>
-      <h2>{metric}</h2>
+      <h2>{dataName}</h2>
       <LineChart width={600} height={300} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <XAxis dataKey="at">
-          <Label value={metric} offset={-6} position="insideBottomLeft" />
+          <Label value={dataName} offset={-6} position="insideBottomLeft" />
         </XAxis>
         <YAxis label={{ value: `units measured in ${unit}`, angle: -90, position: 'insideLeft' }} />
 
