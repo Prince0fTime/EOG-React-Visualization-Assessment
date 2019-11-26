@@ -1,4 +1,4 @@
-import ApolloClient from 'apollo-boost';
+import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,13 +12,6 @@ import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-
-
-const client = new ApolloClient({
-  uri: 'https://react.eogresources.com/graphql',
-});
-//Temporary Test values soon to be replaced/Removed
-  const metricDataNames = ['injValveOpen', 'oilTemp', 'tubingPressure', 'flareTemp', 'casingPressure', 'waterTemp'];
 
 
   const useStyles = makeStyles(theme => ({
@@ -40,10 +33,27 @@ const client = new ApolloClient({
     },
   };
   
+  const EXCHANGE_RATES = gql`
+  {
+    getMetrics
+  }
+`;
+
 
   export default (props) => {
     const classes = useStyles(0);
+    const { loading, error, data } = useQuery(EXCHANGE_RATES);
 
+    if (loading) return (
+      toast.info(`loading Please wait..`),
+      <p>loading...</p>
+    );
+    if (error) return (
+      toast.error(`Error Received: ${error}`),
+      <p>Error...</p>
+    );
+      const {getMetrics} = data;
+      
   
     const { handleChange, SelectedDataName} = props;
   return (
@@ -59,7 +69,7 @@ const client = new ApolloClient({
             renderValue={selected => selected.join(', ')}
             MenuProps={MenuProps}
           >
-            {metricDataNames.map(name => (
+            {getMetrics.map(name => (
               <MenuItem key={name} value={name}>
                 <Checkbox checked={SelectedDataName.indexOf(name) > -1} />
                 <ListItemText primary={name} />
