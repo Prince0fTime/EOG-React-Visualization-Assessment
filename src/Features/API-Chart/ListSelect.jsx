@@ -33,7 +33,7 @@ import Checkbox from '@material-ui/core/Checkbox';
     },
   };
   
-  const EXCHANGE_RATES = gql`
+  const GET_METRICS = gql`
   {
     getMetrics
   }
@@ -42,7 +42,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
   export default (props) => {
     const classes = useStyles(0);
-    const { loading, error, data } = useQuery(EXCHANGE_RATES);
+    const { loading, error, data } = useQuery(GET_METRICS);
 
     if (loading) return (
       toast.info(`loading Please wait..`),
