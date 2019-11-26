@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from './CardHeader';
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 export default () => {
   const classes = useStyles(0);
-  const [SelectedDataName, setSelectedDataName] = React.useState([]);
+  const [SelectedDataName, setSelectedDataName] = useState([]);
 
   // Hackey solution For scaling chart sizes Check what the current Amount of Selected items there are and it just size as necessary
   let numOfNames = SelectedDataName.length;
