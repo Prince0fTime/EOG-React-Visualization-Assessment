@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label} from 'recharts';
 
 const data = [
@@ -1638,16 +1638,28 @@ const data = [
 export default (props) => {
   const {unit} = data[0]
   const dataName = props.daName;
+  useEffect(() => {
+    setInterval(()=>{
+      var d1 = new Date();
+      var d1t2 = parseInt(d1.getTime()/1000);
+
+      console.log(dataName);
+      var dt = new Date();
+      dt.setMinutes( dt.getMinutes() - 30 );
+      console.log(JSON.stringify(dt))
+      console.log(d1t2)
+    },3000)
+  })
 
   return (
     <React.Fragment>
           <h2>{dataName}</h2>
           <ResponsiveContainer  width="100%" height={280} >
-      <LineChart data={data} margin={{ top: 4, right: 0, left: -25, bottom: 5 }}>
+      <LineChart data={data} margin={{ top: 4, right: 0, left: 5, bottom: 5 }}>
         <XAxis dataKey="at">
           <Label value={dataName} offset={-6} position="insideBottomLeft" />
         </XAxis>
-        <YAxis offset={6} label={{ value: `units measured in ${unit}`, angle: -90, position: 'Left' }} />
+        <YAxis offset={6} label={{ value: `units measured in ${unit}`, angle: -90, position: 'insideBottomLeft' }} />
 
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
