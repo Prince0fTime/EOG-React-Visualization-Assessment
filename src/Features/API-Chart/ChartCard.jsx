@@ -1,76 +1,76 @@
-import React, { useState, useEffect } from "react";
-import {ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label} from 'recharts';
+import React from 'react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label } from 'recharts';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { toast } from 'react-toastify';
 
 const GET_MEASUREMENTS = gql`
   query getMeasurements($metricInfo: MeasurementQuery) {
-    getMeasurements( input: $metricInfo)
-    {
-          metric
-          at
-          value
-          unit
-        }    
+    getMeasurements(input: $metricInfo) {
+      metric
+      at
+      value
+      unit
+    }
   }
 `;
 
-export default (props) => {
+export default props => {
+  //to get time and minus 30 min's and send back to sever as UINX time-stamp
+  var queryTime = new Date(props.epochTime);
+  queryTime.setMinutes(queryTime.getMinutes() - 30);
+  const queryTimeUINX = Math.round(queryTime.getTime() / 1000);
+  //get metric name
   const dataName = props.daName;
-  const dataQ = {metricName: dataName ,after: "1574793285580"}
-  // const dataQ = {metricName: dataName ,before: "1574793285580"}
-  // const dataQ = "injValveOpen"
+  //setup query
+  const dataQ = { metricName: dataName, after: queryTimeUINX };
 
-  const { loading, error, data } = useQuery(GET_MEASUREMENTS,{
-    variables: { ["metricInfo"]: dataQ },
+  const { loading, error, data } = useQuery(GET_MEASUREMENTS, {
+    variables: { 'metricInfo': dataQ },
+    pollInterval: 200,
   });
-
-  if (loading) return (
-    toast.info(`loading Please wait..`),
-    <p>loading...</p>
-  );
+//error handling/check if loading
+if (loading){
+  toast.info(`loading Please wait..`)
+  return (<p>loading...</p>);
+  }
   if (error) {
-console.error(error)
-    return (
-    toast.error(`Error Received: ${error}`),
-    <p>Error...</p>
-  );
-}
-    const {getMeasurements} = data;
+    console.error(error);
+    toast.error(`Error Received: ${error}`)
+    return (<p>Error...</p>)
+  }
+  const { getMeasurements } = data;
 
-  const {unit} = getMeasurements[0]
+  const { unit } = getMeasurements[0];
+  let measurementData = [];
+  getMeasurements.forEach(measurement => {
+    let newMeasurementWithTime = measurement;
+    let dateTimeObj = new Date(measurement.at);
 
-  // useEffect(() => {
-  //   setInterval(()=>{
-  //     var d1 = new Date();
-  //     var d1t2 = parseInt(d1.getTime()/1000);
+    let utcString = dateTimeObj.toUTCString();
 
-  //     console.log(dataName);
-  //     var dt = new Date();
-  //     dt.setMinutes( dt.getMinutes() - 30 );
-  //     console.log(JSON.stringify(dt))
-  //     console.log(d1t2)
-  //   },3000)
-  // })
+    newMeasurementWithTime.dateTime = { Date_Time: utcString.slice(-11, -4) };
+    newMeasurementWithTime.time = utcString.slice(-25, -4);
+    measurementData.push(newMeasurementWithTime);
+  });
 
 
   return (
     <React.Fragment>
-          <h2>{dataName}</h2>
-          <ResponsiveContainer  width="100%" height={280} >
-      <LineChart data={getMeasurements} margin={{ top: 4, right: 0, left: 5, bottom: 5 }}>
-        <XAxis dataKey="at">
-          <Label value={dataName} offset={-6} position="insideBottomLeft" />
-        </XAxis>
-        <YAxis offset={6} label={{ value: `units measured in ${unit}`, angle: -90, position: 'insideBottomLeft' }} />
+      <h2>{`${dataName} Value: ${measurementData[measurementData.length - 1].value} ${unit}`}</h2>
+      <ResponsiveContainer width="100%" height={280}>
+        <LineChart data={measurementData} margin={{ top: 4, right: 0, left: 5, bottom: 5 }}>
+          <XAxis dataKey="time" interval="preserveStartEnd">
+            <Label value={dataName} offset={-6} position="insideBottomLeft" />
+          </XAxis>
+          <YAxis offset={6} label={{ value: `units measured in ${unit}`, angle: -90, position: 'insideBottomLeft' }} />
 
-        <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="value" stroke="#82ca9d" dot={false} />
-      </LineChart>
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="value" stroke="#82ca9d" dot={false} />
+        </LineChart>
       </ResponsiveContainer>
-      </React.Fragment>
+    </React.Fragment>
   );
 };

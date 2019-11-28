@@ -77,5 +77,4 @@ import Checkbox from '@material-ui/core/Checkbox';
         </FormControl>
 
   );
-
-  }
+  };
