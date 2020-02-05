@@ -4,7 +4,7 @@ This assessment was bespoke handcrafted for me.
 
 Read more about this assessment [here](https://react.eogresources.com)
 
- published at [here] (https://prince0ftime.github.io/EOG-React-Visualization-Assessment/)
+Published at [here](https://prince0ftime.github.io/EOG-React-Visualization-Assessment/)
 
 Data visualization assessment for EOG in react.
 Using apollo for calling GraphQL data querys and uses the apollo react hook `useQuery()`,
